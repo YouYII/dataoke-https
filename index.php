@@ -1,6 +1,10 @@
 <?php
+# 使用教程
+#0. 部署 https 证书在服务器(若不会安装可以咨询QQ:736851786)
+#1. 将大淘客上下载的index.php 重命名为 dataoke.php
+#2. 将本文件放在dataoke.php同级目录
+#3. 将www.zheby.com修改为你的网站地址 
 
-# 替换为你的域名
 $domain = 'www.zheby.com';
 # 是否开启 http 永久重定向到 https
 $force_https = true;
@@ -12,6 +16,13 @@ function shutdownHandler() {
     $data = str_replace('dataoke.php', 'index.php', $data);
     # 引入的这个js 里加载了http资源
     $data = preg_replace('|node.parentNode.insertBefore[^\n]*|', '', $data);
+    foreach(headers_list() as $item){
+        if(strpos($item,'Location:') === 0){
+            $item = str_replace('dataoke.php' , '/index.php' , $item);
+            $item = str_replace('http://' , 'https://' , $item);
+            header($item,true);
+        }
+    }
     echo $data;
 }
 
