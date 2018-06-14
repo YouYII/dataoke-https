@@ -9,7 +9,7 @@ $force_domain = true;
 
 function shutdownHandler() {
     $data = str_replace('http://', '//', ob_get_clean());
-    $data = str_replace('dataoke.php', 'index.php', ob_get_clean());
+    $data = str_replace('dataoke.php', 'index.php', $data);
     # 引入的这个js 里加载了http资源
     $data = preg_replace('|node.parentNode.insertBefore[^\n]*|', '', $data);
     echo $data;
