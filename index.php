@@ -14,8 +14,11 @@ $force_domain = true;
 function shutdownHandler() {
     $data = str_replace('http://', '//', ob_get_clean());
     $data = str_replace('dataoke.php', 'index.php', $data);
-    # 引入的这个js 里加载了http资源
-    $data = preg_replace('|node.parentNode.insertBefore[^\n]*|', '', $data);
+
+    if(stripos($data , '</head>')!=false){
+        # 阻止动态加载图片, 因为动态加载的图片是 http 的 ,http://tj.quan007.com/_utm.gif , 这个应该是仅仅用来做统计的
+        $data = str_replace('</head>' , "<script>function Image(){}</script></head>" , $data);
+    }
     foreach(headers_list() as $item){
         if(strpos($item,'Location:') === 0){
             $item = str_replace('dataoke.php' , '/index.php' , $item);
@@ -26,7 +29,7 @@ function shutdownHandler() {
     echo $data;
 }
 
-function getRequestUrl(){
+function get_request_url(){
     global $domain;
     return "https://{$domain}/".trim($_SERVER['REQUEST_URI'],'/');
 }
@@ -37,7 +40,7 @@ if (
     ($force_domain && $_SERVER['HTTP_HOST']!=$domain)
 ) {
     header("HTTP/1.1 301 Moved Permanently");
-    header('Location: '.getRequestUrl());
+    header('Location: '.get_request_url());
     exit;
 }
 
