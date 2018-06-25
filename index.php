@@ -47,5 +47,6 @@ if (
 ob_start();
 ob_implicit_flush(false);
 register_shutdown_function('shutdownHandler');
-$_SERVER["PHP_SELF"] = 'dataoke.php';
-require($_SERVER["PHP_SELF"]);
+$dataokeFile =  'dataoke.php';
+$_SERVER["PHP_SELF"] = "/".$dataokeFile;
+require($dataokeFile);
